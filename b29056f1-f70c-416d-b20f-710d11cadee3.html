@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>КБТ (крутой банк Тимы)</title>
+  <style>
+    body {
+      background-color: #ffeb3b;
+      margin: 0;
+      font-family: sans-serif;
+      color: #000;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #000;
+      color: #ffeb3b;
+    }
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    button {
+      background-color: #000;
+      color: #ffeb3b;
+      border: none;
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .main, .cards, .exchange, .transfer, .credits, .profile {
+      display: none;
+      padding: 15px;
+    }
+    .active {
+      display: block;
+    }
+    .card {
+      background: #000;
+      color: #ffeb3b;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .currency-balance {
+      margin: 5px 0;
+    }
+    input, select {
+      padding: 6px;
+      margin: 5px 0;
+    }
+    img.profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAACMElEQVR4nO2aT0sDQRSGv3GArMBWICRKxBbpK4QchWoqEkXASiMbsYWQl5BqJWMk5B0CkSkMBD8a7o1EWSxdguOx8aZoZt/ExEkdOS7PJ2ZnN9Py1VVLtU0pVi9DAr4ADzAIn8E7U0ppQB9geAF8Ax1Ig7wQPYjqK9CuAWVmqmlF1AJWZqmsJ0+7KDLj4ArViF5ddvTcA5WjzzGqdRUKKmu/xewbphDEUjQBt0VGJcK8uPQHqZLwPFVJ0AeWJ3o9o5BdAfEC5A9WBXSC47NdyrAeB0I0UM1UYvA7rYsgR0jZ2+AkYVGVQVRSyxDO5WMWRJ4KkK4zAfBsqR3DbmKGOZ4qMThagkBfNGVDJeS6d4lCbfEvcXirvncU7A6RjYm4YRCXdb1frqInh5kgEDcxyvDaCZkKWrP6jj+y0ozxTeRXt3NVWtcusTRaHf+FuAWeI1R5Zh4i3pAOMAc05+kCzwMdw+6iDn8ARkDdU3eA4Be+llTzyTWt8ClgY+Df8JLKhHnpAKNJV7cF2FQjWbgAZwOTu6TVZsHYWA65wAAAABJRU5ErkJggg==" alt="logo">
+    <h1>КБТ (крутой банк Тимы)</h1>
+  </header>
+  <nav>
+    <button onclick="showSection('main')">Главное</button>
+    <button onclick="showSection('cards')">Карты</button>
+    <button onclick="showSection('exchange')">Обмен</button>
+    <button onclick="showSection('transfer')">Переводы</button>
+    <button onclick="showSection('credits')">Кредиты</button>
+    <button onclick="showSection('profile')">Профиль</button>
+  </nav>
+  <section id="main" class="main active">
+    <h2>Баланс</h2>
+    <div id="main-balance"></div>
+    <h3>Кликер</h3>
+    <button onclick="clicker()">+1₽</button>
+  </section>
+  <section id="cards" class="cards">
+    <h2>Карты</h2>
+    <div>
+      <select id="system">
+        <option value="SENSEJCARD">SENSEJCARD</option>
+        <option value="PUPOCHKO">PUPOCHKO</option>
+        <option value="PIZA">PIZA</option>
+      </select>
+      <input type="text" id="cardName" placeholder="Название карты">
+      <select id="currency">
+        <option value="₽">₽</option>
+        <option value="$">$</option>
+        <option value="€">€</option>
+        <option value="¥">¥</option>
+      </select>
+      <button onclick="createCard()">Создать карту</button>
+    </div>
+    <div id="cards-list"></div>
+  </section>
+
+  <section id="exchange" class="exchange">
+    <h2>Обмен валют</h2>
+    <p>Списывается со счёта, бонус −7% к комиссии для PIZA</p>
+    <select id="fromCurrency">
+      <option value="₽">₽</option><option value="$">$</option><option value="€">€</option><option value="¥">¥</option>
+    </select>
+    →
+    <select id="toCurrency">
+      <option value="₽">₽</option><option value="$">$</option><option value="€">€</option><option value="¥">¥</option>
+    </select>
+    <input type="number" id="exchangeAmount" placeholder="Сумма">
+    <button onclick="exchange()">Обменять</button>
+  </section>
+
+  <section id="transfer" class="transfer">
+    <h2>Переводы между картами</h2>
+    <select id="fromCard"></select>
+    →
+    <select id="toCard"></select>
+    <input type="number" id="transferAmount" placeholder="Сумма">
+    <button onclick="transfer()">Перевести</button>
+  </section>
+
+  <section id="credits" class="credits">
+    <h2>Кредиты</h2>
+    <input type="number" id="creditAmount" placeholder="Сумма кредита">
+    <select id="creditCurrency">
+      <option value="₽">₽</option><option value="$">$</option><option value="€">€</option><option value="¥">¥</option>
+    </select>
+    <button onclick="takeCredit()">Взять кредит</button>
+    <div id="credit-info"></div>
+  </section>
+
+  <section id="profile" class="profile">
+    <h2>Профиль</h2>
+    <input type="text" id="profileName" placeholder="Имя">
+    <input type="text" id="profileStatus" placeholder="Статус">
+    <input type="file" id="profileImage">
+    <button onclick="saveProfile()">Сохранить</button>
+    <div id="profileData"></div>
+  </section>
+
+<script>
+  let balances = {"₽": 0, "$": 0, "€": 0, "¥": 0};
+  let cards = [];
+  let creditInterval;
+
+  function showSection(id) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    update();
+  }
+
+  function update() {
+    document.getElementById("main-balance").innerHTML = Object.entries(balances)
+      .map(([c, v]) => `<div class="currency-balance">${c}: ${v.toFixed(2)}</div>`).join("");
+    
+    document.getElementById("cards-list").innerHTML = cards.map((c, i) => `
+      <div class="card">
+        <b>${c.name}</b> (${c.system})<br>
+        ${Object.entries(c.balances).map(([cur, val]) => `${cur}: ${val.toFixed(2)}`).join("<br>")}
+        <br><button onclick="topUp(${i})">Пополнить</button>
+        <button onclick="deleteCard(${i})">Удалить</button>
+      </div>`).join("");
+
+    ["fromCard", "toCard"].forEach(id => {
+      let sel = document.getElementById(id);
+      sel.innerHTML = cards.map((c, i) => `<option value="${i}">${c.name}</option>`).join("");
+    });
+
+    const profile = JSON.parse(localStorage.getItem("profile") || "{}");
+    if (profile.name) document.getElementById("profileData").innerHTML = `
+      <p><b>${profile.name}</b> — ${profile.status || ''}</p>
+      ${profile.image ? `<img class="profile-pic" src="${profile.image}">` : ''}
+    `;
+  }
+
+  function clicker() {
+    balances["₽"] += 1;
+    update();
+  }
+
+  function createCard() {
+    let name = document.getElementById("cardName").value;
+    let system = document.getElementById("system").value;
+    let currency = document.getElementById("currency").value;
+    let bal = {"₽":0,"$":0,"€":0,"¥":0};
+    if (system === "PUPOCHKO" || system === "PIZA") currency = null;
+    else bal[currency] = 0;
+    cards.push({name, system, currency, balances: bal});
+    update();
+  }
+
+  function topUp(i) {
+    let amount = +prompt("Сколько пополнить?");
+    let currency = cards[i].currency || prompt("Валюта?");
+    if (!balances[currency]) balances[currency] = 0;
+    balances[currency] -= amount;
+    let bonus = cards[i].system === "SENSEJCARD" ? amount * 0.03 : 0;
+    cards[i].balances[currency] += amount + bonus;
+    update();
+  }
+
+  function deleteCard(i) {
+    let card = cards[i];
+    Object.entries(card.balances).forEach(([cur, val]) => balances[cur] += val);
+    cards.splice(i, 1);
+    update();
+  }
+
+  function exchange() {
+    let from = document.getElementById("fromCurrency").value;
+    let to = document.getElementById("toCurrency").value;
+    let amount = +document.getElementById("exchangeAmount").value;
+    if (from === to || amount > balances[from]) return;
+    let rate = 1;
+    let commission = 0.1;
+    let discount = cards.some(c => c.system === "PIZA") ? 0.07 : 0;
+    let final = amount * rate * (1 - (commission - discount));
+    balances[from] -= amount;
+    balances[to] += final;
+    update();
+  }
+
+  function transfer() {
+    let i = +document.getElementById("fromCard").value;
+    let j = +document.getElementById("toCard").value;
+    let amount = +document.getElementById("transferAmount").value;
+    let currency = cards[i].currency || prompt("Валюта?");
+    if (cards[i].balances[currency] >= amount) {
+      cards[i].balances[currency] -= amount;
+      cards[j].balances[currency] += amount;
+    }
+    update();
+  }
+
+  function takeCredit() {
+    let amount = +document.getElementById("creditAmount").value;
+    let currency = document.getElementById("creditCurrency").value;
+    let rate = Math.floor(Math.random() * 900 + 99) / 100;
+    balances[currency] += amount;
+    document.getElementById("credit-info").innerText = `Вы взяли ${amount} ${currency} под ${rate}%`;
+    clearInterval(creditInterval);
+    creditInterval = setInterval(() => {
+      balances[currency] -= amount * (rate / 100);
+      update();
+    }, 15000);
+    update();
+  }
+
+  function saveProfile() {
+    let name = document.getElementById("profileName").value;
+    let status = document.getElementById("profileStatus").value;
+    let file = document.getElementById("profileImage").files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("profile", JSON.stringify({name, status, image: reader.result}));
+        update();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      localStorage.setItem("profile", JSON.stringify({name, status}));
+      update();
+    }
+  }
+
+  update();
+</script>
+</body>
+</html>
